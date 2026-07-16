@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Shared data (equipment, consumables, employee accounts): readable and
+    // writable by anyone who has completed sign-in (including anonymous
+    // sign-in, which the app does automatically). This is the equivalent of
+    // "anyone with the link and the in-app login" — not fully public to
+    // random internet bots scanning for open Firestore databases, but not a
+    // strong access-control boundary either. Treat it the same way you'd
+    // treat the earlier Claude-artifact version: fine for an internal tool,
+    // not a place for anything truly sensitive.
+    match /shared/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Personal data (e.g. which in-app user is currently "logged in" on this
+    // browser): only that same anonymous browser identity can read/write its
+    // own personal documents.
+    match /personal/{uid}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}
