@@ -8,5 +8,5 @@ import react from "@vitejs/plugin-react";
 // repo itself), set base to "/" instead.
 export default defineConfig({
   plugins: [react()],
-  base: "/REPO_NAME/",
+  base: "/equipment-tracker/",
 });
